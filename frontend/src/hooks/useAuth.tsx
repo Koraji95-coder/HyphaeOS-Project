@@ -92,9 +92,14 @@ function useProvideAuth(): AuthContextType {
     try {
       const res: AuthResult = await loginService({ username, password, code });
       setToken(res.token);
-      const me = await getProfile();
-      setUser(me);
-      return me;
+      const loginUser: User = {
+        id: res.id,
+        username: res.username,
+        role: res.role,
+        pin_verified: res.pin_verified,
+      };
+      setUser(loginUser);
+      return loginUser;
     } catch (e: any) {
       setError(e.message);
       throw e;
