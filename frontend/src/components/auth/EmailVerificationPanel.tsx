@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 
@@ -18,9 +18,12 @@ const EmailVerificationPanel: React.FC = () => {
   const [status, setStatus] = useState<"idle" | "pending" | "success" | "error">(
     token ? "pending" : "idle"
   );
+  const attemptedRef = useRef(false);
 
-  // Attempt auto-verification if token is present
+  // Attempt auto-verification if token is present (guard against Strict Mode double-run)
   useEffect(() => {
+    if (attemptedRef.current) return;
+    attemptedRef.current = true;
     if (!email) {
       setMessage("No email found. Please register or login.");
       setTimeout(() => navigate("/login", { replace: true }), 2500);
