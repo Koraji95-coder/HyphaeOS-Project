@@ -17,15 +17,16 @@ const Rootbloom: React.FC = () => {
 
   // helper to call the HTTP generate endpoint
   const generate = useCallback(
-    async (prompt: string, context?: any) => {
+    async (prompt: string, context?: unknown) => {
       setLoading(true);
       setError(null);
       try {
         const resp = await generateContent(prompt, context);
         setLogs((prev) => [...prev, resp]);
-      } catch (err: any) {
+      } catch (err: unknown) {
         console.error("[Rootbloom] generate error:", err);
-        setError(err.message || "Generation failed");
+        const message = err instanceof Error ? err.message : "Generation failed";
+        setError(message);
       } finally {
         setLoading(false);
       }
